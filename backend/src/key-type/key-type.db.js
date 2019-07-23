@@ -1,5 +1,5 @@
 const uuid = require("uuid/v4");
-const { query } = require("../db-utils");
+const { query } = require("../utils");
 
 const getKeyTypes = () =>
     query(
