@@ -55,5 +55,12 @@ module.exports = {
     },
     del: (url, handler) => {
         app.delete("/api" + url, handler);
+    },
+    to: promise => {
+        return promise
+            .then(data => {
+                return [null, data];
+            })
+            .catch(err => [err]);
     }
 };

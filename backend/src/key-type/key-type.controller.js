@@ -1,4 +1,4 @@
-const { get, post, put, del } = require("../utils");
+const { get, post, put, del, to } = require("../utils");
 const {
     getKeyTypes,
     getKeyType,
@@ -8,32 +8,42 @@ const {
 } = require("./key-type.db");
 
 const handleGetKeyTypes = async (req, res) => {
-    const keyTypes = await getKeyTypes();
-    res.send(keyTypes);
+    const [err, keyTypes] = await to(getKeyTypes());
+
+    if (err) res.send(500);
+    else res.send(keyTypes);
 };
 
 const handleGetKeyType = async (req, res) => {
     const { id } = req.params;
-    const keyType = await getKeyType(id);
-    res.send(keyType);
+    const [err, keyType] = await getKeyType(id);
+
+    if (err) res.send(500);
+    else res.send(keyType);
 };
 
 const handleAddKeyType = async (req, res) => {
-    await addKeyType(name);
-    res.send(201);
+    const [err] = await addKeyType(name);
+
+    if (err) res.send(500);
+    else res.send(201);
 };
 
 const handleEditKeyType = async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    await editKeyType(id, name);
-    res.send(201);
+    const [err] = await editKeyType(id, name);
+
+    if (err) res.send(500);
+    else res.send(201);
 };
 
 const handleDeleteKeyType = async (req, res) => {
     const { id } = req.params;
-    await deleteKeyType(id);
-    res.send(200);
+    const [err] = await deleteKeyType(id);
+
+    if (err) res.send(500);
+    else res.send(200);
 };
 
 get("/key_type", handleGetKeyTypes);
