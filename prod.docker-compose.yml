@@ -1,0 +1,25 @@
+version: "2"
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: keys_frontend
+    ports:
+      - "3000:80"
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: keys_backend
+    ports:
+      - "8080:8080"
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_DB: keys
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+    ports:
+      - 5432:5432

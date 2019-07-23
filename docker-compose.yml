@@ -1,0 +1,38 @@
+version: "2"
+services:
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+  backend:
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    image: keys_backend:dev
+    ports:
+      - 4000:4000
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    image: keys_frontend:dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/usr/src/app
+  db:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_DB: keys
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
