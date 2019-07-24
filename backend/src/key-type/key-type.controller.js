@@ -1,3 +1,4 @@
+const uuid = require("uuid/v4");
 const { get, post, put, del, to } = require("../utils");
 const {
     getKeyTypes,
@@ -16,23 +17,29 @@ const handleGetKeyTypes = async (req, res) => {
 
 const handleGetKeyType = async (req, res) => {
     const { id } = req.params;
-    const [err, keyType] = await getKeyType(id);
+    const [err, keyType] = await to(getKeyType(id));
 
     if (err) res.sendStatus(500);
     else res.status(200).send(keyType);
 };
 
 const handleAddKeyType = async (req, res) => {
-    const [err] = await addKeyType(name);
+    const id = uuid();
+    const { name } = req.body;
+    const [err] = await to(addKeyType(id, name));
 
     if (err) res.sendStatus(500);
-    else res.sendStatus(201);
+    else
+        res.status(201).send({
+            id,
+            name
+        });
 };
 
 const handleEditKeyType = async (req, res) => {
     const { id } = req.params;
     const { name } = req.body;
-    const [err] = await editKeyType(id, name);
+    const [err] = await to(editKeyType(id, name));
 
     if (err) res.sendStatus(500);
     else res.sendStatus(201);
@@ -40,7 +47,7 @@ const handleEditKeyType = async (req, res) => {
 
 const handleDeleteKeyType = async (req, res) => {
     const { id } = req.params;
-    const [err] = await deleteKeyType(id);
+    const [err] = await to(deleteKeyType(id));
 
     if (err) res.send(500);
     else res.send(200);

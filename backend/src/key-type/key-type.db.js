@@ -1,4 +1,3 @@
-const uuid = require("uuid/v4");
 const { query } = require("../utils");
 
 const getKeyTypes = () =>
@@ -12,8 +11,8 @@ const getKeyType = id =>
         results.length > 0 ? results.rows[0] : {}
     );
 
-const addKeyType = name =>
-    query("INSERT INTO key_type (id, name) VALUES ($1, $2)", [uuid(), name]);
+const addKeyType = (id, name) =>
+    query("INSERT INTO key_type (id, name) VALUES ($1, $2)", [id, name]);
 
 const editKeyType = (id, name) =>
     query("UPDATE key_type SET name = $1 WHERE id = $2", [name, id]);

@@ -16,9 +16,7 @@ const pg = require("pg");
 var pool = null;
 
 const initExpress = (port = 4000) => {
-    server.listen(port, () => {
-        console.log("START SERVER");
-    });
+    server.listen(port);
 };
 
 const initDB = (host = "db", port = 5432) => {
@@ -30,15 +28,6 @@ const initDB = (host = "db", port = 5432) => {
         host: host,
         port: port
     });
-
-    pool.query("SELECT * FROM key_type ORDER BY name ASC")
-        .then(res => {
-            console.log(res.rows);
-        })
-        .catch(err => {
-            console.log("åh nej");
-            console.log(err);
-        });
 };
 
 const getPool = () => pool;
@@ -81,6 +70,10 @@ const to = promise => {
 
 const getApp = () => app;
 
+const closeExpress = () => {
+    server.close();
+};
+
 module.exports = {
     query,
     get,
@@ -91,5 +84,6 @@ module.exports = {
     initExpress,
     initDB,
     getPool,
-    getApp //for testing
+    getApp, //for testing
+    closeExpress
 };

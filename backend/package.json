@@ -6,8 +6,12 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "test": "mocha './test/**/*.spec.js'"
+    "test": "nyc --reporter=text mocha './test/**/*.spec.js' --exit"
   },
+  "pre-commit": [
+    "prettier",
+    "test"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -21,6 +25,8 @@
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^6.2.0",
+    "nyc": "^14.1.1",
+    "pre-commit": "^1.2.2",
     "prettier": "^1.18.2"
   }
 }
