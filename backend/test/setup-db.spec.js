@@ -8,8 +8,10 @@ before(() => {
     utils.initDB("0.0.0.0", 5432);
 });
 
-beforeEach(() => {
-    tables.forEach(table => {
-        utils.getPool().query("TRUNCATE " + table + " RESTART IDENTITY");
-    });
+beforeEach(done => {
+    Promise.all(
+        tables.map(table =>
+            utils.getPool().query("TRUNCATE " + table + " RESTART IDENTITY")
+        )
+    ).then(() => done());
 });

@@ -74,6 +74,11 @@ const closeExpress = () => {
     server.close();
 };
 
+const v4UUIDPattern = new RegExp(
+    /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
+);
+const isUUID = uuid => uuid.match(v4UUIDPattern);
+
 module.exports = {
     query,
     get,
@@ -85,5 +90,6 @@ module.exports = {
     initDB,
     getPool,
     getApp, //for testing
-    closeExpress
+    closeExpress,
+    isUUID
 };

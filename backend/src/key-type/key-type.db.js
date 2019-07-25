@@ -8,16 +8,25 @@ const getKeyTypes = () =>
     );
 const getKeyType = id =>
     query("SELECT * FROM key_type WHERE id = $1", [id], results =>
-        results.length > 0 ? results.rows[0] : {}
+        results.rowCount > 0 ? results.rows[0] : {}
     );
 
 const addKeyType = (id, name) =>
     query("INSERT INTO key_type (id, name) VALUES ($1, $2)", [id, name]);
 
 const editKeyType = (id, name) =>
-    query("UPDATE key_type SET name = $1 WHERE id = $2", [name, id]);
+    query(
+        "UPDATE key_type SET name = $1 WHERE id = $2",
+        [name, id],
+        results => results.rowCount
+    );
 
-const deleteKeyType = id => query("DELETE FROM key_type WHERE id = $1", [id]);
+const deleteKeyType = id =>
+    query(
+        "DELETE FROM key_type WHERE id = $1",
+        [id],
+        results => results.rowCount
+    );
 
 module.exports = {
     getKeyType,
