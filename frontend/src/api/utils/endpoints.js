@@ -1,1 +1,1 @@
-export const KEY_TYPES_ENDPOINT = "/key_type";
+export const KEY_TYPES_ENDPOINT = "/key_type/";

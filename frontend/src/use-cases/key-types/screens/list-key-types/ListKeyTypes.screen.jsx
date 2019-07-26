@@ -33,9 +33,13 @@ const ListKeyTypes = () => {
                     columnsOrder={["id", "name"]}
                     headerTexts={{
                         id: "Id",
-                        name: "Namn"
+                        name: "Namn",
+                        __link: "Detaljer"
                     }}
-                    data={keyTypes}
+                    data={keyTypes.map(keyType => ({
+                        __link: "/key-types/" + keyType.id,
+                        ...keyType
+                    }))}
                 />
             </DigitLayout.Center>
             <DigitLayout.DownRightPosition>
