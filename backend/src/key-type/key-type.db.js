@@ -2,13 +2,13 @@ const { query } = require("../utils");
 
 const getKeyTypes = () =>
     query(
-        "SELECT * FROM key_type ORDER BY name ASC",
+        "SELECT * FROM key_type ORDER BY name",
         null,
         results => results.rows
     );
 const getKeyType = id =>
     query("SELECT * FROM key_type WHERE id = $1", [id], results =>
-        results.rowCount > 0 ? results.rows[0] : {}
+        results.rowCount > 0 ? results.rows[0] : null
     );
 
 const addKeyType = (id, name) =>

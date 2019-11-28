@@ -34,8 +34,8 @@ const initDB = (host = "db", port = 5432) => {
 
 const getPool = () => pool;
 
-const query = (sql, values, convertResult = result => result) => {
-    return new Promise((resolve, reject) => {
+const query = (sql, values, convertResult = result => result) =>
+    new Promise((resolve, reject) => {
         pool.query(sql, values, (errors, results) => {
             if (errors) {
                 reject(errors);
@@ -44,7 +44,6 @@ const query = (sql, values, convertResult = result => result) => {
             }
         });
     });
-};
 
 const get = (url, handler) => {
     app.get("/api" + url, handler);
@@ -79,7 +78,13 @@ const closeExpress = () => {
 const v4UUIDPattern = new RegExp(
     /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i
 );
+
 const isUUID = uuid => uuid.match(v4UUIDPattern);
+
+const renameProp = (oldProp, newProp, { [oldProp]: old, ...others }) => ({
+    [newProp]: old,
+    ...others
+});
 
 module.exports = {
     query,
@@ -93,5 +98,6 @@ module.exports = {
     getPool,
     getApp, //for testing
     closeExpress,
-    isUUID
+    isUUID,
+    renameProp
 };

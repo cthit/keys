@@ -1,6 +1,5 @@
 const uuid = require("uuid/v4");
-const { isUUID } = require("../utils");
-const { get, post, put, del, to } = require("../utils");
+const { get, post, put, del, to, isUUID } = require("../utils");
 const {
     getKeyTypes,
     getKeyType,
