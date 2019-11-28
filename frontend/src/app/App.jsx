@@ -8,12 +8,12 @@ import {
     DigitDialog
 } from "@cthit/react-digit-components";
 import { Switch, Route } from "react-router-dom";
-import KeyTypes from "../use-cases/key-types";
-import { rootReducer } from "./App.reducer";
 import HistoryContext from "../common/context/HistoryContext";
+import Keys from "../use-cases/keys";
+import KeyTypes from "../use-cases/key-types";
 
 const App = () => (
-    <DigitProviders rootReducer={rootReducer}>
+    <DigitProviders>
         <Route
             render={({ history }) => (
                 <HistoryContext.Provider value={history}>
@@ -25,7 +25,12 @@ const App = () => (
                             <DigitLayout.Column>
                                 <DigitNavLink
                                     onClick={closeDrawer}
-                                    text={"Nyckelserier"}
+                                    text={"Keys"}
+                                    link={"/keys"}
+                                />
+                                <DigitNavLink
+                                    onClick={closeDrawer}
+                                    text={"Key types"}
                                     link={"/key-types"}
                                 />
                             </DigitLayout.Column>
@@ -36,6 +41,7 @@ const App = () => (
                                     path={"/key-types"}
                                     component={KeyTypes}
                                 />
+                                <Route path={"/keys"} component={Keys} />
                             </Switch>
                         )}
                     />
