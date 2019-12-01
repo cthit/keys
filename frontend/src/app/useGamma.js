@@ -5,40 +5,58 @@ import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { DigitToastActions } from "@cthit/react-digit-components";
 
-function updateMe(gammaPath, dispatch) {
-    dispatch({
+function createGammaUserGetLoadingAction() {
+    return {
         type: "GAMMA_USER_GET_LOADING",
         error: false
-    });
+    };
+}
+
+function createGammaUserGetFailedAction(error) {
+    return {
+        type: "GAMMA_USER_GET_FAILED",
+        error: false,
+        payload: error
+    };
+}
+
+function createGammaUserGetTokenFailedAction(error) {
+    return {
+        type: "GAMMA_USER_GET_TOKEN_FAILED",
+        error: false,
+        payload: error
+    };
+}
+
+function createGammaUserGetSuccessfully(response) {
+    return {
+        type: "GAMMA_USER_GET_SUCCESSFULLY",
+        error: false,
+        payload: {
+            ...response.data
+        }
+    };
+}
+
+function updateMe(gammaPath, dispatch, name) {
+    dispatch(createGammaUserGetLoadingAction());
     axios
         .get(removeLastSlash(gammaPath) + "/users/me", {
             headers: {
-                Authorization: "Bearer " + sessionStorage.jwtAuth
+                Authorization:
+                    "Bearer " + sessionStorage.getItem("auth-" + name)
             }
         })
         .then(response => {
             if (typeof response.data !== "object") {
                 //prob html file that says "plz sign in"
-                dispatch({
-                    type: "GAMMA_USER_GET_FAILED",
-                    error: false
-                });
+                dispatch(createGammaUserGetFailedAction(response.data));
             } else {
-                dispatch({
-                    type: "GAMMA_USER_GET_SUCCESSFULLY",
-                    error: false,
-                    payload: {
-                        ...response.data
-                    }
-                });
+                dispatch(createGammaUserGetSuccessfully(response));
             }
         })
         .catch(error => {
-            dispatch({
-                type: "GAMMA_USER_GET_FAILED",
-                error: false
-            });
-            console.log(error);
+            dispatch(createGammaUserGetFailedAction(error));
         });
 }
 
@@ -55,28 +73,36 @@ function redirectToGamma(gammaPath, redirect, id) {
         baseUrl + "?" + responseType + "&" + clientId + "&" + redirectUri;
 }
 
+function signOut(name) {
+    sessionStorage.removeItem("auth-" + name);
+    window.location.href = "/";
+}
+
 function useGamma(
     name = "MyApp",
     id = "id",
     secret = "secret",
     redirect = "http://localhost:3001/auth/account/callback",
     gammaPath = "http://localhost:8081/api",
-    forceSignedIn = true
+    forceSignedIn = true,
+    toastSignedOutText = "You're signed out",
+    toastSignBackInText = "Press to sign in",
+    toastDuration = 5000
 ) {
     const dispatch = useDispatch();
     const [loadingMe, setLoadingMe] = useState(false);
     const [user, loading, error] = useGammaUser();
 
-    const jwtAuth = sessionStorage.jwtAuth;
+    const jwtAuth = sessionStorage.getItem("auth-" + name);
 
     useEffect(() => {
         if (error && !loading) {
-            delete sessionStorage.jwtAuth;
+            sessionStorage.removeItem("auth-" + name);
             dispatch(
                 DigitToastActions.digitToastOpen({
-                    text: "Something went wrong when trying to use Gamma",
-                    duration: 999999,
-                    actionText: "Refresh access via Gamma",
+                    text: toastSignedOutText,
+                    duration: toastDuration,
+                    actionText: toastSignBackInText,
                     actionHandler: () => {
                         redirectToGamma(gammaPath, redirect, id);
                     }
@@ -85,7 +111,8 @@ function useGamma(
         }
     }, [loading, error]);
 
-    if (!jwtAuth) {
+    if (!jwtAuth && !error && !loadingMe) {
+        setLoadingMe(true);
         const paramsResponse = new URLSearchParams(window.location.search);
         const code = paramsResponse.get("code");
         //check if just signed in:
@@ -113,13 +140,15 @@ function useGamma(
                 )
                 .then(response => {
                     window.location.href = "/";
-                    sessionStorage.jwtAuth = response.data.access_token;
+                    sessionStorage.setItem(
+                        "auth-" + name,
+                        response.data.access_token
+                    );
                     setLoadingMe(true);
-                    updateMe(gammaPath, dispatch);
+                    updateMe(gammaPath, dispatch, name);
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert("Something went wrong, really wrong");
+                    dispatch(createGammaUserGetTokenFailedAction(error));
                 });
         } else {
             if (forceSignedIn) {
@@ -128,13 +157,13 @@ function useGamma(
         }
     } else if (!user && !loadingMe) {
         setLoadingMe(true);
-        updateMe(gammaPath, dispatch);
+        updateMe(gammaPath, dispatch, name);
     }
     return [
-        user,
         loading,
         error,
-        () => redirectToGamma(gammaPath, redirect, id)
+        () => redirectToGamma(gammaPath, redirect, id),
+        () => signOut(name)
     ];
 }
 

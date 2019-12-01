@@ -18,22 +18,24 @@ import useGamma from "./useGamma";
 import useGammaUser from "./useGammaUser";
 
 const App = () => {
-    const name = "MyApp";
-    const id = "id";
-    const secret = "secret";
-    const redirect = "http://localhost:3001/auth/account/callback";
+    const name = "keys";
+    const id = process.env.REACT_APP_GAMMA_ID || "id";
+    const secret = process.env.REACT_APP_GAMMA_SECRET || "secret";
+    const redirect =
+        process.env.REACT_APP_FRONTEND_CALLBACK_URL ||
+        "http://localhost:3001/auth/account/callback";
     const gammaPath =
         process.env.REACT_APP_BACKEND_URL || "http://localhost:8081/api";
 
-    const [_, __, ___, login] = useGamma(
+    const [loading, error, login, logout] = useGamma(
         name,
         id,
         secret,
         redirect,
         gammaPath,
-        true
+        false
     );
-    const [user, loading, error] = useGammaUser();
+    const [user] = useGammaUser();
 
     return (
         <Route
@@ -49,6 +51,12 @@ const App = () => {
                                     text={"login"}
                                     onClick={() => {
                                         login();
+                                    }}
+                                />
+                                <DigitButton
+                                    text={"logout"}
+                                    onClick={() => {
+                                        logout();
                                     }}
                                 />
                                 <DigitNavLink

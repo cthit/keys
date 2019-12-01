@@ -10,6 +10,7 @@ function gammaUser(state = { loading: true }, action) {
             return {
                 loading: true
             };
+        case "GAMMA_USER_GET_TOKEN_FAILED":
         case "GAMMA_USER_GET_FAILED":
             return {
                 loading: false,
