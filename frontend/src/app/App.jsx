@@ -6,16 +6,15 @@ import {
     DigitLayout,
     DigitLoading,
     DigitNavLink,
-    DigitProviders,
-    DigitToast
+    DigitToast,
+    useGamma,
+    useGammaUser
 } from "@cthit/react-digit-components";
 import { Route, Switch } from "react-router-dom";
 import HistoryContext from "../common/context/HistoryContext";
 import Keys from "../use-cases/keys";
 import KeyTypes from "../use-cases/key-types";
 import Ownership from "../use-cases/ownership";
-import useGamma from "./useGamma";
-import useGammaUser from "./useGammaUser";
 
 const App = () => {
     const name = "keys";
@@ -33,9 +32,11 @@ const App = () => {
         secret,
         redirect,
         gammaPath,
-        false
+        true
     );
     const [user] = useGammaUser();
+
+    console.log(user);
 
     return (
         <Route
@@ -47,18 +48,6 @@ const App = () => {
                         title={"Keys"}
                         renderDrawer={closeDrawer => (
                             <DigitLayout.Column>
-                                <DigitButton
-                                    text={"login"}
-                                    onClick={() => {
-                                        login();
-                                    }}
-                                />
-                                <DigitButton
-                                    text={"logout"}
-                                    onClick={() => {
-                                        logout();
-                                    }}
-                                />
                                 <DigitNavLink
                                     onClick={closeDrawer}
                                     text={"Keys"}

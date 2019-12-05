@@ -1,8 +1,8 @@
 const uuid = require("uuid/v4");
 const { find } = require("lodash");
 const { put, del, post, get, to, isUUID } = require("../utils");
-const { addKey, getKeys, getKey, editKey, deleteKey } = require("./key.db");
-const { getKeyType, getKeyTypes } = require("../key-type/key-type.db");
+const { addKey, getKeys, getKey, editKey, deleteKey } = require("../db/key.db");
+const { getKeyType, getKeyTypes } = require("../db/key-type.db");
 
 const handleAddKey = async (req, res) => {
     const id = uuid();

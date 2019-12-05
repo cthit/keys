@@ -6,7 +6,7 @@ const {
     addKeyType,
     editKeyType,
     deleteKeyType
-} = require("./key-type.db");
+} = require("../db/key-type.db");
 
 const handleGetKeyTypes = async (req, res) => {
     const [err, keyTypes] = await to(getKeyTypes());
@@ -55,6 +55,7 @@ const handleAddKeyType = async (req, res) => {
 
     if (err) {
         res.sendStatus(500);
+        console.log(err);
     } else {
         res.status(201).send({ id });
     }
